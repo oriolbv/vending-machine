@@ -1,7 +1,8 @@
 {
     "name": "oburgaya/vending-machine",
     "require": {
-        "php": "^7.4"
+        "php": "^7.4",
+        "symfony/console": "^5.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"

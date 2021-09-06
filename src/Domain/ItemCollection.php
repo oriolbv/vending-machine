@@ -1,6 +1,6 @@
 <?php
 
-namespace VendingMachine;
+namespace VendingMachine\Domain;
 
 class ItemCollection
 {
@@ -18,7 +18,7 @@ class ItemCollection
 
     public function addItem(Item $item) : void
     {
-        $items[] = $item;
+        $this->items[] = $item;
     }
 
     public function removeItem(Item $item) : void

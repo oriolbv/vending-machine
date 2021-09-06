@@ -1,6 +1,6 @@
 <?php
 
-namespace VendingMachine;
+namespace VendingMachine\Domain;
 
 
 class VendingMachine
@@ -20,6 +20,11 @@ class VendingMachine
         $this->itemsAvailable = $itemsAvailable;
     }
 
+    public static function empty(): VendingMachine
+    {
+        return new self(CoinCollection::empty(), CoinCollection::empty(), ItemCollection::empty());
+    }
+
     public function insertUserCredit(float $coin) : void
     {
         $this->userCredit->addCoin(Coin::make($coin));
@@ -30,11 +35,20 @@ class VendingMachine
         $this->machineCredit->addCoin(Coin::make($coin));
     }
 
+    public function insertItem(string $name, float $price)
+    {
+        $this->itemsAvailable->addItem(Item::make($name, $price));
+    }
+
     public function returnUserCredit() : array
     {
         $tmp_arr = $this->userCredit->getCoins();
         $this->userCredit->removeAllCoins();
-        return $tmp_arr;
+        $prices = [];
+        foreach ($tmp_arr as $coin) {
+            $prices[] = $coin->getPrice();
+        }
+        return $prices;
     }
 
     public function sellItem(string $name) : array
@@ -65,12 +79,20 @@ class VendingMachine
 
     public function getMachineCredit() : array
     {
-        return $this->machineCredit->getCoins();
+        $coinPrices = [];
+        foreach ($this->machineCredit->getCoins() as $coin) {
+            $coinPrices[] = $coin->getPrice();
+        }
+        return $coinPrices;
     }
 
     public function getItemsAvailable() : array
     {
-        return $this->itemsAvailable->getItems();
+        $item_names = [];
+        foreach ($this->itemsAvailable->getItems() as $item) {
+            $item_names[] = $item->getName();
+        }
+        return $item_names;
     }
 
 }

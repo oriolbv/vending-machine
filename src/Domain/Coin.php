@@ -1,6 +1,6 @@
 <?php
 
-namespace VendingMachine;
+namespace VendingMachine\Domain;
 
 class Coin
 {

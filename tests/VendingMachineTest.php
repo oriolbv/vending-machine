@@ -3,10 +3,10 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use VendingMachine\CoinCollection;
-use VendingMachine\VendingMachine;
-use VendingMachine\Item;
-use VendingMachine\ItemCollection;
+use VendingMachine\Domain\CoinCollection;
+use VendingMachine\Domain\VendingMachine;
+use VendingMachine\Domain\Item;
+use VendingMachine\Domain\ItemCollection;
 
 class VendingMachineTest extends TestCase
 {
