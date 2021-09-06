@@ -8,7 +8,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Oburgaya\\VendingMachine\\": "src/"
+            "Oburgaya\\VendingMachine\\": "src/",
+            "Oburgaya\\VendingMachine\\Tests\\": "tests/"
         }
     },
     "authors": [
