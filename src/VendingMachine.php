@@ -22,6 +22,13 @@ class VendingMachine
         array_push($this->userCredit, $coin);
     }
 
+    public function returnUserCredit() : array
+    {
+        $tmp_arr = $this->userCredit;
+        $this->userCredit = [];
+        return $tmp_arr;
+    }
+
     public function getUserCredit() : array
     {
         return $this->userCredit;
