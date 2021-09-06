@@ -5,15 +5,15 @@ namespace VendingMachine;
 class Item
 {
     private string $name;
-    private int $price;
+    private float $price;
 
-    private function __construct(string $name, int $price)
+    private function __construct(string $name, float $price)
     {
         $this->name = $name;
         $this->price = $price;
     }
 
-    public static function make(string $name, int $price): Item
+    public static function make(string $name, float $price): Item
     {
         return new self($name, $price);
     }
@@ -23,7 +23,7 @@ class Item
         return $this->name;
     }
 
-    public function getPrice(): int
+    public function getPrice(): float
     {
         return $this->price;
     }

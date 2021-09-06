@@ -40,11 +40,21 @@ class VendingMachine
         $total_user_credit = (float) array_reduce($this->userCredit, function ($total, $coin) {
             return $coin + $total;
         }, 0);
+        $operationChange = [];
+
+        if ($total_user_credit === $item->getPrice()) {
+            $this->itemsAvailable->remove($item);
+            return $operationChange;
+        }
+
+
         if ($total_user_credit < $item->getPrice()) {
             throw new \Exception("Not enough money.");
         }
+        $this->items->remove($item);
 
-        return [];
+
+        return $operationChange;
     }
 
     public function getUserCredit() : array
@@ -54,7 +64,7 @@ class VendingMachine
 
     public function getItemsAvailable() : array
     {
-        return $this->itemsAvailable;
+        return $this->itemsAvailable->getItems();
     }
 
 }

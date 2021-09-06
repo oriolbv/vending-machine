@@ -43,14 +43,14 @@ class VendingMachineTest extends TestCase
         $vm->sellItem("Juice");
     }
 
-    #public function test_sell_item_no_change()
-    #{
-    #    $item = new Item("Juice", 1.0);
-    #    $vm = new VendingMachine([]);
-    #    $vm->insertMoney(1);
-    #    $vm->sellItem("Juice");
-    #    $this->assertEmpty($vm->getItems());
-    #}
+    public function test_sell_item_no_change()
+    {
+        $item = Item::make("Juice", 1.0);
+        $vm = new VendingMachine([], new ItemCollection($item));
+        $vm->insertUserCredit(1);
+        $vm->sellItem("Juice");
+        $this->assertEmpty($vm->getItemsAvailable());
+    }
 
 
 }
