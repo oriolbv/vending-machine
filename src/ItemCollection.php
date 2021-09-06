@@ -16,7 +16,12 @@ class ItemCollection
         return new self();
     }
 
-    public function remove(Item $item) : void
+    public function addItem(Item $item) : void
+    {
+        $items[] = $item;
+    }
+
+    public function removeItem(Item $item) : void
     {
         foreach ($this->items as $idx => $current_item) {
             if ($current_item->getName() === $item->getName()) {
@@ -26,7 +31,7 @@ class ItemCollection
         }
     }
 
-    public function find(string $id) : Item
+    public function findItem(string $id) : Item
     {
         $item = null;
 

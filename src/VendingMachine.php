@@ -7,51 +7,52 @@ class VendingMachine
 {
     private const VALID_COINS = [0.05, 0.10, 0.25, 1];
 
-    private array $userCredit = [];
+    private CoinCollection $userCredit;     // Credit inserted by the actual client
+    private CoinCollection $machineCredit;  // Credit used to return change to the clients
     private ItemCollection $itemsAvailable;
 
-    public function __construct(array $userCredit, ItemCollection $itemsAvailable)
+    public function __construct(CoinCollection $userCredit,
+                                CoinCollection $machineCredit,
+                                ItemCollection $itemsAvailable)
     {
         $this->userCredit = $userCredit;
+        $this->machineCredit = $machineCredit;
         $this->itemsAvailable = $itemsAvailable;
     }
 
     public function insertUserCredit(float $coin) : void
     {
-        if (!in_array($coin, self::VALID_COINS)) {
-            throw new \Exception("Coin value not valid.");
-        }
-        array_push($this->userCredit, $coin);
+        $this->userCredit->addCoin(Coin::make($coin));
+    }
+
+    public function insertMachineCredit(float $coin) : void
+    {
+        $this->machineCredit->addCoin(Coin::make($coin));
     }
 
     public function returnUserCredit() : array
     {
-        $tmp_arr = $this->userCredit;
-        $this->userCredit = [];
+        $tmp_arr = $this->userCredit->getCoins();
+        $this->userCredit->removeAllCoins();
         return $tmp_arr;
     }
 
-
-
     public function sellItem(string $name) : array
     {
-        $item = $this->itemsAvailable->find($name);
+        $item = $this->itemsAvailable->findItem($name);
 
-        $total_user_credit = (float) array_reduce($this->userCredit, function ($total, $coin) {
-            return $coin + $total;
-        }, 0);
+        $total_user_credit = $this->userCredit->getTotalAmount();
         $operationChange = [];
 
         if ($total_user_credit === $item->getPrice()) {
-            $this->itemsAvailable->remove($item);
+            $this->itemsAvailable->removeItem($item);
             return $operationChange;
         }
-
 
         if ($total_user_credit < $item->getPrice()) {
             throw new \Exception("Not enough money.");
         }
-        $this->items->remove($item);
+        $this->itemsAvailable->removeItem($item);
 
 
         return $operationChange;
@@ -59,7 +60,12 @@ class VendingMachine
 
     public function getUserCredit() : array
     {
-        return $this->userCredit;
+        return $this->userCredit->getCoins();
+    }
+
+    public function getMachineCredit() : array
+    {
+        return $this->machineCredit->getCoins();
     }
 
     public function getItemsAvailable() : array
