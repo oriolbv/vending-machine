@@ -3,6 +3,8 @@
 
 namespace VendingMachine\Domain;
 
+use VendingMachine\Domain\Exception\NotEnoughChangeException;
+
 class CoinCollection
 {
     private array $coins;
@@ -17,7 +19,7 @@ class CoinCollection
         return new self();
     }
 
-    public static function make(Coin ...$coins): Wallet
+    public static function make(Coin ...$coins): CoinCollection
     {
         return new self(...$coins);
     }
@@ -30,9 +32,9 @@ class CoinCollection
 
 
 
-    public function getTotalAmount(): int
+    public function getTotalAmount(): float
     {
-        return array_reduce($this->coins, function (int $total, Coin $coin) {
+        return array_reduce($this->coins, function (float $total, Coin $coin) {
             return $total + $coin->getPrice();
         }, 0);
     }
