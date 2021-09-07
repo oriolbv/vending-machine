@@ -3,6 +3,9 @@
 namespace VendingMachine\Domain;
 
 
+use VendingMachine\Domain\Exception\ItemSoldOutException;
+use VendingMachine\Domain\Exception\NotEnoughCreditException;
+
 class VendingMachine
 {
     private const VALID_COINS = [0.05, 0.10, 0.25, 1];
@@ -55,7 +58,14 @@ class VendingMachine
     {
         $item = $this->itemsAvailable->findItem($name);
 
+        if (!$item) {
+            throw new ItemSoldOutException();
+        }
         $total_user_credit = $this->userCredit->getTotalAmount();
+        if ($total_user_credit < $item->getPrice()) {
+            throw new NotEnoughCreditException();
+        }
+
         $operationChange = [];
 
         if ($total_user_credit === $item->getPrice()) {
@@ -63,9 +73,8 @@ class VendingMachine
             return $operationChange;
         }
 
-        if ($total_user_credit < $item->getPrice()) {
-            throw new \Exception("Not enough money.");
-        }
+        $operationChange = $this->machineCredit->changeFor($total_user_credit - $item->getPrice());
+
         $this->itemsAvailable->removeItem($item);
 
 

@@ -44,6 +44,16 @@ class VendingMachineTest extends TestCase
         $vm->sellItem("Juice");
     }
 
+    public function test_sell_item_not_found()
+    {
+        $item = Item::make("Juice", 1.0);
+        $vm = new VendingMachine(CoinCollection::empty(), CoinCollection::empty(), new ItemCollection($item));
+        $vm->insertUserCredit(1);
+        $this->expectException(\Exception::class);
+        $vm->sellItem("Water");
+    }
+
+
     public function test_sell_item_no_change()
     {
         $item = Item::make("Juice", 1.0);
@@ -59,7 +69,8 @@ class VendingMachineTest extends TestCase
         $vm = new VendingMachine(CoinCollection::empty(), CoinCollection::empty(), new ItemCollection($item));
         $vm->insertUserCredit(1);
         $vm->insertUserCredit(1);
-        $vm->insertUserCredit(1);
+        $vm->insertMachineCredit(0.25);
+        $vm->insertMachineCredit(0.25);
         $vm->sellItem("Soda");
         $this->assertEmpty($vm->getItemsAvailable());
     }
