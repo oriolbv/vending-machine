@@ -2,6 +2,8 @@
 
 namespace VendingMachine\Domain;
 
+use VendingMachine\Domain\Exception\ItemSoldOutException;
+
 class ItemCollection
 {
     private array $items;
@@ -43,7 +45,7 @@ class ItemCollection
         }
 
         if (!$item) {
-            throw new \Exception("Item not found.");
+            throw new ItemSoldOutException;
         }
 
         return $item;

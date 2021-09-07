@@ -57,10 +57,12 @@ class VendingMachine
 
     public function sellItem(string $name) : array
     {
-        $item = $this->itemsAvailable->findItem($name);
-        if (!$item) {
+        try {
+            $item = $this->itemsAvailable->findItem($name);
+        } catch (\Exception $e) {
             throw new ItemSoldOutException();
         }
+        
         $total_user_credit = $this->userCredit->getTotalAmount();
         if ($total_user_credit < $item->getPrice()) {
             throw new NotEnoughCreditException();
