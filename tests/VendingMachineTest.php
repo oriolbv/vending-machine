@@ -77,5 +77,6 @@ class VendingMachineTest extends TestCase
         $change = $vm->sellItem("Soda");
         $this->assertEmpty($vm->getItemsAvailable());
         $this->assertCount(2, $change);
+        $this->assertCount(1, $vm->getMachineCredit());
     }
 }

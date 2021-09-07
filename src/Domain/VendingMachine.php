@@ -69,6 +69,7 @@ class VendingMachine
         $operationChange = [];
         if ($total_user_credit === $item->getPrice()) {
             $this->itemsAvailable->removeItem($item);
+            $this->userCredit = CoinCollection::empty();
             return $operationChange;
         }
 
@@ -79,6 +80,7 @@ class VendingMachine
         }
 
         $this->itemsAvailable->removeItem($item);
+        $this->userCredit = CoinCollection::empty();
         return $operationChange;
     }
 

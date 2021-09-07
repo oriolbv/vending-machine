@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 use VendingMachine\Domain\Coin;
 use VendingMachine\Domain\VendingMachine;
 
@@ -25,17 +26,21 @@ class RunVendingMachine extends Command
 
             if ($operation === 'insert_money') {
                 $coin = $this->askCoin($input, $output);
-                $vm->insertUserCredit((float)$coin);
+                try {
+                    $vm->insertUserCredit((float)$coin);
+                } catch (\Exception $e) {}
+
             }
 
             if ($operation === 'return_coin') {
                 $user_credit = $vm->returnUserCredit();
-                $output->write("[".implode(",", $user_credit)."]\n");
+                $output->write("Money returned: [".implode(",", $user_credit)."]\n");
             }
 
             if ($operation === 'select_item') {
-                $item = $this->askService($input, $output);
-                $vm->sellItem($item);
+                $item = $this->askItem($input, $output);
+                $change = $vm->sellItem($item);
+                $output->write("Money change: [".implode(",", $change)."]\n");
             }
 
             if ($operation === 'service') {
@@ -95,8 +100,7 @@ class RunVendingMachine extends Command
             '1.00',
         ];
 
-        $question = new ChoiceQuestion('Add a coin', $validCoins);
-        $question->setErrorMessage('Please select a valid coin');
+        $question = new Question('Add a coin from the following values [0.05, 0.10, 0.25, 1.00]:');
 
         $helper = $this->getHelper('question');
         return $helper->ask($input, $output, $question);

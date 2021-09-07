@@ -46,11 +46,11 @@ class CoinCollection
         $this->coins = $coins;
     }
 
-    public function removeCoin(array $change): void
+    public function removeCoins(array $change): void
     {
         foreach ($change as $changeCoin) {
             foreach ($this->coins as $index => $coin) {
-                if ($coin->getPrice() === $changeCoin->getPrice()) {
+                if ($coin->getPrice() === $changeCoin) {
                     unset($this->coins[$index]);
                     sort($this->coins);
                     break;
@@ -83,6 +83,7 @@ class CoinCollection
             $amount = $amount - $change;
             $amount = round($amount, 2);
             if ($amount == 0) {
+                $this->removeCoins($changeCoins);
                 return $changeCoins;
             }
         }
