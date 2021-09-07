@@ -64,22 +64,24 @@ class CoinCollection
         $this->coins = [];
     }
 
-    public function changeFor(int $amount): array
+    public function changeFor(float $amount): array
     {
-        $changeCoins =[];
-        usort($this->coins, fn($a, $b) => $a->getPrice() - $b->getPrice());
-        return $this->coins;
-        foreach ($this->coins as $change) {
-            if ($amount < $change->getPrice()) {
+        $changeCoins = [];
+        $availableCoins = [];
+        foreach ($this->coins as $coin) {
+            $availableCoins[] = $coin->getPrice();
+        }
+        rsort($availableCoins);
+
+        foreach ($availableCoins as $change) {
+            if ($amount < $change) {
                 continue;
             }
 
-            $changeCoins[] = $change->getPrice();
+            $changeCoins[] = $change;
 
-            $amount = $amount - $change->getPrice();
+            $amount = $amount - $change;
             $amount = round($amount, 2);
-            echo "New amount: " . $amount . "\n";
-
             if ($amount == 0) {
                 return $changeCoins;
             }
@@ -88,7 +90,6 @@ class CoinCollection
         if (0 < $amount) {
             throw new NotEnoughChangeException();
         }
-
         return $changeCoins;
     }
 

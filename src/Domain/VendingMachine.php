@@ -4,6 +4,7 @@ namespace VendingMachine\Domain;
 
 
 use VendingMachine\Domain\Exception\ItemSoldOutException;
+use VendingMachine\Domain\Exception\NotEnoughChangeException;
 use VendingMachine\Domain\Exception\NotEnoughCreditException;
 
 class VendingMachine
@@ -57,7 +58,6 @@ class VendingMachine
     public function sellItem(string $name) : array
     {
         $item = $this->itemsAvailable->findItem($name);
-
         if (!$item) {
             throw new ItemSoldOutException();
         }
@@ -67,17 +67,18 @@ class VendingMachine
         }
 
         $operationChange = [];
-
         if ($total_user_credit === $item->getPrice()) {
             $this->itemsAvailable->removeItem($item);
             return $operationChange;
         }
 
-        $operationChange = $this->machineCredit->changeFor($total_user_credit - $item->getPrice());
+        try {
+            $operationChange = $this->machineCredit->changeFor($total_user_credit - $item->getPrice());
+        } catch (\Exception $e) {
+            throw new NotEnoughChangeException();
+        }
 
         $this->itemsAvailable->removeItem($item);
-
-
         return $operationChange;
     }
 

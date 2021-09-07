@@ -4,6 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\CoinCollection;
+use VendingMachine\Domain\Exception\ItemSoldOutException;
 use VendingMachine\Domain\VendingMachine;
 use VendingMachine\Domain\Item;
 use VendingMachine\Domain\ItemCollection;
@@ -69,9 +70,12 @@ class VendingMachineTest extends TestCase
         $vm = new VendingMachine(CoinCollection::empty(), CoinCollection::empty(), new ItemCollection($item));
         $vm->insertUserCredit(1);
         $vm->insertUserCredit(1);
+
         $vm->insertMachineCredit(0.25);
         $vm->insertMachineCredit(0.25);
-        $vm->sellItem("Soda");
+        $vm->insertMachineCredit(1);
+        $change = $vm->sellItem("Soda");
         $this->assertEmpty($vm->getItemsAvailable());
+        $this->assertCount(2, $change);
     }
 }
